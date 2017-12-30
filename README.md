@@ -19,10 +19,8 @@ Xposed module for "欅坂46メッセー" app
 - Help to download photos, audios, videos in messages
 
 ## Screenshot
-<img alt="text" src="screenshots/text.jpg" width="20%" hspace="2" />
-<img alt="photo" src="screenshots/photo.jpg" width="20%" hspace="2" />
-<img alt="video" src="screenshots/video.jpg" width="20%" hspace="2" />
-<img alt="audio" src="screenshots/audio.jpg" width="20%" hspace="2" />
+<img alt="text" src="screenshots/text.jpg" width="25%"/><img alt="photo" src="screenshots/photo.jpg" width="25%"/><img alt="video" src="screenshots/video.jpg" width="25%"/><img alt="audio" src="screenshots/audio.jpg" width="25%"/>
+
 
 ## License
 This project is under the [GNU General Public License v3.0](https://www.gnu.org/licenses/gpl-3.0.en.html)
