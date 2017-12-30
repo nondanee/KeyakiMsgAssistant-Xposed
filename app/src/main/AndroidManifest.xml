@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.nondanee.keyakimsgassistant">
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme">
+        <meta-data
+            android:name="xposedmodule"
+            android:value="true" />
+        <meta-data
+            android:name="xposeddescription"
+            android:value="@string/description" />
+        <meta-data
+            android:name="xposedminversion"
+            android:value="54" />
+
+        <service
+            android:name="com.nondanee.keyakimsgassistant.service"
+            android:exported="true" />
+
+        <service
+            android:name="com.nondanee.keyakimsgassistant.intentService"
+            android:exported="false" />
+
+
+    </application>
+
+
+</manifest>

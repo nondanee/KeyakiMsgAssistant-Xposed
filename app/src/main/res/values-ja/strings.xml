@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">欅坂メッセージ助手</string>
+    <string name="audio_prompt">音声リソースを取得する</string>
+    <string name="photo_prompt">写真リソースを取得する</string>
+    <string name="video_prompt">動画リソースを入手する</string>
+    <string name="reject">拒絶する</string>
+    <string name="open">開いた</string>
+    <string name="download">ダウンロード</string>
+    <string name="dismiss">無視する</string>
+    <string name="authorize">認可された</string>
+    <string name="welcome">歓迎する</string>
+    <string name="need_storage">権限を保存する必要がある</string>
+    <string name="no_storage">ストレージ特権の欠如</string>
+    <string name="please_authorize">承認してください</string>
+    <string name="copy">コピー</string>
+    <string name="copy_success">クリップボードに正常にコピーされました</string>
+    <string name="description">メディアファイルを保存するができます</string>
+</resources>
