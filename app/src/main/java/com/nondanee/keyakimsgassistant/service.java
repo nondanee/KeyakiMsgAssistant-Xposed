@@ -1,6 +1,7 @@
 package com.nondanee.keyakimsgassistant;
 
 import android.app.AlertDialog;
+import android.app.DownloadManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -12,6 +13,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.os.IBinder;
@@ -23,9 +25,11 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
-
+import java.util.Properties;
 
 /**
  * Created by Nzix on 2017/9/9.
@@ -48,21 +52,6 @@ public class service extends Service {
         return null;
     }
 
-    public static void captureResource(Context context, String id, String url, int mediaType) {
-
-        Intent intent = new Intent();
-        intent.setAction(ACTION_NOTIFY);
-        intent.setClassName(PACKAGE_NAME, CLASS_NAME);
-        intent.putExtra("id", id);
-        intent.putExtra("url", url);
-        intent.putExtra("mediaType", mediaType);
-        context.startService(intent);
-
-//        Log.d("xposed_nondanee","service raise");
-//        Log.d("xposed_nondanee",url + "---" + mediaType);
-
-    }
-
     public static void launchCheck(Context context) {
 
         Intent intent = new Intent();
@@ -82,7 +71,22 @@ public class service extends Service {
 
     }
 
-    private void permissionRequest(int type){
+    public static void captureResource(Context context, String id, String url, int mediaType) {
+
+        Intent intent = new Intent();
+        intent.setAction(ACTION_NOTIFY);
+        intent.setClassName(PACKAGE_NAME, CLASS_NAME);
+        intent.putExtra("id", id);
+        intent.putExtra("url", url);
+        intent.putExtra("mediaType", mediaType);
+        context.startService(intent);
+
+//        Log.d("xposed_nondanee",url + "---" + mediaType);
+
+    }
+
+
+    private void permissionPromptNotification(int type){
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
 
@@ -141,7 +145,49 @@ public class service extends Service {
 
     }
 
-    public void copyConfirm(final String text){
+
+    private void permissionPromptDialog(int type){
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (!Settings.canDrawOverlays(this)) {
+                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                this.startActivity(intent);
+                return;
+            }
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(this,AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
+        builder.setIcon(R.mipmap.ic_launcher);
+        if(type == 0){
+            builder.setTitle(getResources().getString(R.string.welcome));
+            builder.setMessage(getResources().getString(R.string.need_storage));
+        }
+        else if(type == 1){
+            builder.setTitle(getResources().getString(R.string.no_storage));
+            builder.setMessage(getResources().getString(R.string.please_authorize));
+        }
+        builder.setNegativeButton(getResources().getString(R.string.authorize), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            Intent settingIntent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+            settingIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            Uri uri = Uri.fromParts("package", getPackageName(), null);
+            settingIntent.setData(uri);
+            startActivity(settingIntent);
+            }
+        });
+        builder.setPositiveButton(getResources().getString(R.string.reject), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        final AlertDialog alertDialog = builder.create();
+        alertDialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+        alertDialog.show();
+
+    }
+
+    public void copyPrompt(final String text){
         if (Build.VERSION.SDK_INT >= 23) {
             if (!Settings.canDrawOverlays(this)) {
                 Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
@@ -178,7 +224,7 @@ public class service extends Service {
     }
 
 
-    private void downloadPrompt(String url, int mediaType, String fileName){
+    private void downloadPromptNotification(String url, int mediaType, String fileName){
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
 //        builder.setColor(ContextCompat.getColor(this, R.color.colorPrimary));
@@ -231,6 +277,7 @@ public class service extends Service {
                 id,
                 new Intent(),
                 0);
+
         builder.setContentIntent(nopPendingIntent);
 //        builder.setFullScreenIntent(nopPendingIntent,true);
 
@@ -280,28 +327,89 @@ public class service extends Service {
 
     }
 
+    public void downloadPromptDialog(final String url, int mediaType, final String fileName){
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (!Settings.canDrawOverlays(this)) {
+                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                this.startActivity(intent);
+                return;
+            }
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(this,AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
+        if(mediaType == 1){
+            builder.setTitle(getResources().getString(R.string.photo_prompt));
+            builder.setIcon(R.drawable.ic_photo_colored);
+        }
+        else if(mediaType == 2){
+            builder.setTitle(getResources().getString(R.string.audio_prompt));
+            builder.setIcon(R.drawable.ic_voice_colored);
+        }
+        else if(mediaType == 3){
+            builder.setTitle(getResources().getString(R.string.video_prompt));
+            builder.setIcon(R.drawable.ic_movie_colored);
+        }
+//        builder.setMessage(url);
+        builder.setNegativeButton(getResources().getString(R.string.download), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
+                request.setDestinationInExternalPublicDir(Environment.DIRECTORY_PICTURES, ALBUM_NAME + File.separator + fileName);
+                request.setTitle(fileName);
+                request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+                request.setVisibleInDownloadsUi(true);
+                request.allowScanningByMediaScanner();
+                DownloadManager downloadManager= (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+                downloadManager.enqueue(request);
+            }
+        });
+        builder.setPositiveButton(getResources().getString(R.string.dismiss), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        final AlertDialog alertDialog = builder.create();
+        alertDialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+        alertDialog.show();
+    }
+
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+
+        boolean isMIUI = romCheck.isMIUI();
 
         if (intent != null) {
 
             String action = intent.getAction();
 
             if (ACTION_CHECK.equals(action)) {
-                if(isStoragePermissionGranted() == false) {
-                    permissionRequest(0);
+
+                if(!isStoragePermissionGranted()) {
+                    if (isMIUI) {
+                        permissionPromptDialog(0);
+                    }
+                    else {
+                        permissionPromptNotification(0);
+                    }
                 }
             }
 
             else if (ACTION_COPY.equals(action)) {
                 String text = intent.getStringExtra("text");
-                copyConfirm(text);
+                copyPrompt(text);
             }
 
             else if (ACTION_NOTIFY.equals(action)) {
-                if(isStoragePermissionGranted() == false) {
-                    permissionRequest(1);
+
+                if(!isStoragePermissionGranted()) {
+                    if (isMIUI) {
+                        permissionPromptDialog(1);
+                    }
+                    else {
+                        permissionPromptNotification(1);
+                    }
                 }
                 else {
                     String url = intent.getStringExtra("url");
@@ -316,7 +424,12 @@ public class service extends Service {
 
                     File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/" + ALBUM_NAME + "/" + fileName);
                     if (!file.exists()) {
-                        downloadPrompt(url, mediaType, fileName);
+                        if(isMIUI){
+                            downloadPromptDialog(url, mediaType, fileName);
+                        }
+                        else {
+                            downloadPromptNotification(url, mediaType, fileName);
+                        }
                     }
                 }
             }
@@ -340,5 +453,27 @@ public class service extends Service {
         }
     }
 
+}
 
+class romCheck {
+
+    private static final String KEY_MIUI_VERSION_CODE = "ro.miui.ui.version.code";
+    private static final String KEY_MIUI_VERSION_NAME = "ro.miui.ui.version.name";
+    private static final String KEY_MIUI_INTERNAL_STORAGE = "ro.miui.internal.storage";
+
+    public static boolean isMIUI() {
+        Properties prop= new Properties();
+        try {
+            prop.load(new FileInputStream(new File(Environment.getRootDirectory(), "build.prop")));
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+        boolean isMIUI;
+        isMIUI= prop.getProperty(KEY_MIUI_VERSION_CODE, null) != null
+                || prop.getProperty(KEY_MIUI_VERSION_NAME, null) != null
+                || prop.getProperty(KEY_MIUI_INTERNAL_STORAGE, null) != null;
+        return isMIUI;
+    }
 }
