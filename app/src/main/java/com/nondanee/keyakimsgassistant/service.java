@@ -168,11 +168,9 @@ public class service extends Service {
         builder.setNegativeButton(getResources().getString(R.string.authorize), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-            Intent settingIntent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-            settingIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            Uri uri = Uri.fromParts("package", getPackageName(), null);
-            settingIntent.setData(uri);
-            startActivity(settingIntent);
+            Intent settingIntent = new Intent(service.this,intentService.class);
+            settingIntent.setAction(ACTION_SETTING);
+            startService(settingIntent);
             }
         });
         builder.setPositiveButton(getResources().getString(R.string.reject), new DialogInterface.OnClickListener() {
@@ -353,14 +351,11 @@ public class service extends Service {
         builder.setNegativeButton(getResources().getString(R.string.download), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
-                request.setDestinationInExternalPublicDir(Environment.DIRECTORY_PICTURES, ALBUM_NAME + File.separator + fileName);
-                request.setTitle(fileName);
-                request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-                request.setVisibleInDownloadsUi(true);
-                request.allowScanningByMediaScanner();
-                DownloadManager downloadManager= (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
-                downloadManager.enqueue(request);
+                Intent downloadIntent = new Intent(service.this,intentService.class);
+                downloadIntent.setAction(ACTION_DOWNLOAD);
+                downloadIntent.putExtra("url",url);
+                downloadIntent.putExtra("fileName",fileName);
+                startService(downloadIntent);
             }
         });
         builder.setPositiveButton(getResources().getString(R.string.dismiss), new DialogInterface.OnClickListener() {
@@ -378,7 +373,7 @@ public class service extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        boolean isMIUI = romCheck.isMIUI();
+        boolean isMiuiRom = util.isMiuiRom();
 
         if (intent != null) {
 
@@ -386,8 +381,8 @@ public class service extends Service {
 
             if (ACTION_CHECK.equals(action)) {
 
-                if(!isStoragePermissionGranted()) {
-                    if (isMIUI) {
+                if(!util.isStoragePermissionGranted(this)) {
+                    if (isMiuiRom) {
                         permissionPromptDialog(0);
                     }
                     else {
@@ -403,8 +398,8 @@ public class service extends Service {
 
             else if (ACTION_NOTIFY.equals(action)) {
 
-                if(!isStoragePermissionGranted()) {
-                    if (isMIUI) {
+                if(!util.isStoragePermissionGranted(this)) {
+                    if (isMiuiRom) {
                         permissionPromptDialog(1);
                     }
                     else {
@@ -418,13 +413,9 @@ public class service extends Service {
                     String fileName = url.replaceAll("\\?\\S+$", "");
                     fileName = fileName.replaceAll("^\\S+/", "");
 
-//                    if (mediaType == 2){
-//                        fileName = fileName.replaceAll(".mp4$", ".mp3");
-//                    }
-
                     File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/" + ALBUM_NAME + "/" + fileName);
                     if (!file.exists()) {
-                        if(isMIUI){
+                        if(isMiuiRom){
                             downloadPromptDialog(url, mediaType, fileName);
                         }
                         else {
@@ -435,45 +426,7 @@ public class service extends Service {
             }
 
         }
-
+        stopSelf(startId);
         return START_NOT_STICKY;
-    }
-
-    private  boolean isStoragePermissionGranted() {
-        if (Build.VERSION.SDK_INT >= 23) {
-            if (ContextCompat.checkSelfPermission(this,android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                return true;
-            }
-            else {
-                return false;
-            }
-        }
-        else { //permission is automatically granted on sdk<23 upon installation
-            return true;
-        }
-    }
-
-}
-
-class romCheck {
-
-    private static final String KEY_MIUI_VERSION_CODE = "ro.miui.ui.version.code";
-    private static final String KEY_MIUI_VERSION_NAME = "ro.miui.ui.version.name";
-    private static final String KEY_MIUI_INTERNAL_STORAGE = "ro.miui.internal.storage";
-
-    public static boolean isMIUI() {
-        Properties prop= new Properties();
-        try {
-            prop.load(new FileInputStream(new File(Environment.getRootDirectory(), "build.prop")));
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
-        boolean isMIUI;
-        isMIUI= prop.getProperty(KEY_MIUI_VERSION_CODE, null) != null
-                || prop.getProperty(KEY_MIUI_VERSION_NAME, null) != null
-                || prop.getProperty(KEY_MIUI_INTERNAL_STORAGE, null) != null;
-        return isMIUI;
     }
 }

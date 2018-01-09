@@ -35,13 +35,16 @@ public class intentService extends IntentService {
         if (intent != null) {
 
             String action = intent.getAction();
+            NotificationManager notificationmanager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
             if(ACTION_DOWNLOAD.equals(action)) {
+
                 int id = intent.getIntExtra("id", 0);
+                notificationmanager.cancel(id);
                 String url = intent.getStringExtra("url");
                 String fileName = intent.getStringExtra("fileName");
 
-                if (isStoragePermissionGranted() == false) {
+                if (util.isStoragePermissionGranted(this) == false) {
                     return;
                 }
 
@@ -68,27 +71,23 @@ public class intentService extends IntentService {
                     request.setVisibleInDownloadsUi(true);
                     request.allowScanningByMediaScanner();
 
-                    DownloadManager downloadManager= (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+                    DownloadManager downloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
                     downloadManager.enqueue(request);
 
                 } catch (Exception e) {
                     Log.e("xposed_nondanee", e.toString());
                 }
 
-                final NotificationManager notificationmanager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-                notificationmanager.cancel(id);
             }
             else if(ACTION_DISMISS.equals(action)) {
 
                 int id = intent.getIntExtra("id", 0);
-                final NotificationManager notificationmanager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
                 notificationmanager.cancel(id);
 
             }
             else if(ACTION_SETTING.equals(action)){
 
                 int id = intent.getIntExtra("id", 0);
-                final NotificationManager notificationmanager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
                 notificationmanager.cancel(id);
 
                 Intent settingIntent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
@@ -100,24 +99,6 @@ public class intentService extends IntentService {
             }
         }
     }
-
-
-    private  boolean isStoragePermissionGranted() {
-        if (Build.VERSION.SDK_INT >= 23) {
-            if (checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                return true;
-            }
-            else {
-                return false;
-            }
-        }
-        else { //permission is automatically granted on sdk<23 upon installation
-            return true;
-        }
-    }
-
-
-
 }
 
 
