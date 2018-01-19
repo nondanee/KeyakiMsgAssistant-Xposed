@@ -1,7 +1,7 @@
 <img src="/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png" alt="logo" width="144" height="144" align="right" />
 
 # KeyakiMsgAssistant
-Xposed module for "欅坂46メッセー" app
+Xposed module for "欅坂46メッセー" app  
 (Without user interface)
 
 ## Requirement
@@ -15,7 +15,7 @@ Xposed module for "欅坂46メッセー" app
 - SYSTEM_ALERT_WINDOW
 
 ## Feature
-- Add long-press-to-copy function for text
+- Add long-press-to-copy and double-tap-to-copy function for text
 - Help to download photos, audios, videos in messages
 
 ## Screenshot

@@ -80,7 +80,7 @@ public class Module implements IXposedHookLoadPackage {
             );
 
             // VOICE
-            XposedHelpers.findAndHookMethod("jp.co.sonymusic.communication.keyakizaka.common.di",
+            XposedHelpers.findAndHookMethod("jp.co.sonymusic.communication.keyakizaka.common.dp",
                 loadPackageParam.classLoader,
                 "a",
                 loadPackageParam.classLoader.loadClass("jp.co.sonymusic.communication.keyakizaka.db.dto.TalkInfo"),
@@ -209,9 +209,21 @@ public class Module implements IXposedHookLoadPackage {
 
 }
 
- class TouchEventHandler {
+class TouchEventHandler {
     private View currentView;
     private GestureDetector gestureDetector;
+
+    private void detectView(){
+        TextView textView = (TextView) currentView;
+        int resourceId = textView.getId();
+        if (resourceId != View.NO_ID) {
+            String viewName = currentView.getContext().getResources().getResourceEntryName(resourceId);
+            if (viewName.equals("text") || viewName.equals("singleLineText")) {
+                String text = textView.getText().toString();
+                service.getText(text, currentView.getContext());
+            }
+        }
+    }
 
     public void hookTouchEvent(View view, MotionEvent event) {
 
@@ -237,15 +249,12 @@ public class Module implements IXposedHookLoadPackage {
                 }
                 public void onLongPress(MotionEvent e) {
                     // TODO Auto-generated method stub
-                    TextView textView = (TextView) currentView;
-                    int resourceId = textView.getId();
-                    if (resourceId != View.NO_ID) {
-                        String viewName = currentView.getContext().getResources().getResourceEntryName(resourceId);
-                        if (viewName.equals("text") || viewName.equals("singleLineText")) {
-                            String text = textView.getText().toString();
-                            service.getText(text, currentView.getContext());
-                        }
-                    }
+                    detectView();
+                }
+                public boolean onDoubleTap(MotionEvent e) {
+                    // TODO Auto-generated method stub
+                    detectView();
+                    return true;
                 }
                 public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
                     // TODO Auto-generated method stub
