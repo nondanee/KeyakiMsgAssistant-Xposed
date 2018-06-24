@@ -26,8 +26,7 @@ Xposed module for "欅坂46メッセー" app
 
 ## Reference
 
-[Ashish-Bansal/OneTapVideoDownload](https://github.com/Ashish-Bansal/OneTapVideoDownload)
-
+[Ashish-Bansal/OneTapVideoDownload](https://github.com/Ashish-Bansal/OneTapVideoDownload)  
 [veeti/DisableFlagSecure](https://github.com/veeti/DisableFlagSecure)
 
 ## License
