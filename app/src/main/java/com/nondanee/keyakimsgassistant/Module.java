@@ -7,6 +7,8 @@ import android.media.MediaPlayer;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 
@@ -79,23 +81,6 @@ public class Module implements IXposedHookLoadPackage {
                     }
             );
 
-            // VOICE
-            XposedHelpers.findAndHookMethod("jp.co.sonymusic.communication.keyakizaka.common.dp",
-                loadPackageParam.classLoader,
-                "a",
-                loadPackageParam.classLoader.loadClass("jp.co.sonymusic.communication.keyakizaka.db.dto.TalkInfo"),
-                String.class,
-                new XC_MethodHook() {
-                    @Override
-                    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                        String id = (String) XposedHelpers.callMethod(param.args[0],"getTalkId");
-                        String url = (String) param.args[1];
-                        Context context = AndroidAppHelper.currentApplication().getApplicationContext();
-                        service.captureResource(context,id,url,2);
-                    }
-                }
-            );
-
             // MOVIE
 //            XposedHelpers.findAndHookMethod("jp.co.sonymusic.communication.keyakizaka.activity.ActivityPlayMovie",
 //                loadPackageParam.classLoader,
@@ -131,6 +116,23 @@ public class Module implements IXposedHookLoadPackage {
                     }
             );
 
+            // VOICE
+            XposedHelpers.findAndHookMethod("jp.co.sonymusic.communication.keyakizaka.common.dr",
+                    loadPackageParam.classLoader,
+                    "a",
+                    loadPackageParam.classLoader.loadClass("jp.co.sonymusic.communication.keyakizaka.db.dto.TalkInfo"),
+                    String.class,
+                    new XC_MethodHook() {
+                        @Override
+                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                            String id = (String) XposedHelpers.callMethod(param.args[0],"getTalkId");
+                            String url = (String) param.args[1];
+                            Context context = AndroidAppHelper.currentApplication().getApplicationContext();
+                            service.captureResource(context,id,url,2);
+                        }
+                    }
+            );
+
             //TEXT
             XposedHelpers.findAndHookMethod(
                     View.class,
@@ -149,6 +151,21 @@ public class Module implements IXposedHookLoadPackage {
                     }
             );
 
+            //SCREENSHOT
+            XposedHelpers.findAndHookMethod(
+                    Window.class,
+                    "addFlags",
+                    int.class,
+                    new XC_MethodHook() {
+                        @Override
+                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                            super.beforeHookedMethod(param);
+                            int flags = (int) param.args[0];
+                            flags &= ~WindowManager.LayoutParams.FLAG_SECURE;
+                            param.args[0] = flags;
+                        }
+                    }
+            );
 
             // PHOTO
 //            XposedHelpers.findAndHookMethod("jp.co.sonymusic.communication.keyakizaka.e.c",
@@ -249,7 +266,7 @@ class TouchEventHandler {
                 }
                 public void onLongPress(MotionEvent e) {
                     // TODO Auto-generated method stub
-                    detectView();
+                    // detectView();
                 }
                 public boolean onDoubleTap(MotionEvent e) {
                     // TODO Auto-generated method stub
