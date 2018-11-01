@@ -4,7 +4,7 @@
 Xposed module for "欅坂46メッセー" app  
 (Without user interface)
 
-<a href="https://www.coolapk.com/apk/com.nondanee.keyakimsgassistant"><img alt="Get it on Coolapk" src="./coolapk-badge.png" height=42px /></a>
+<a href="https://www.coolapk.com/apk/com.nondanee.keyakimsgassistant"><img alt="Get it on Coolapk" src="https://user-images.githubusercontent.com/26399680/47835376-b1302200-ddde-11e8-8303-77d106cb4f02.png" height=42px /></a>
 
 ## Requirement
 - [x] Android 4.1+
