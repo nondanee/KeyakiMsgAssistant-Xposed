@@ -9,11 +9,10 @@
     <string name="audio_prompt">Get audio resource</string>
     <string name="photo_prompt">Get photo resource</string>
     <string name="video_prompt">Get video resource</string>
-    <string name="welcome">Welcome</string>
     <string name="need_storage">Need storage permission</string>
-    <string name="no_storage">Lack of storage permission</string>
     <string name="please_authorize">Please authorize</string>
     <string name="copy">Copy</string>
     <string name="copy_success">Copied to clipboard successfully</string>
     <string name="description">Extracts resource from keyakizaka46 message app</string>
+    <string name="need_overlay">Need overlay permission</string>
 </resources>

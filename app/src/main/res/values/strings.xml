@@ -8,9 +8,8 @@
     <string name="dismiss">忽略</string>
     <string name="reject">拒绝</string>
     <string name="authorize">授权</string>
-    <string name="welcome">欢迎使用</string>
     <string name="need_storage">需要存储权限</string>
-    <string name="no_storage">缺少存储权限</string>
+    <string name="need_overlay">需要层叠权限</string>
     <string name="please_authorize">请授权</string>
     <string name="copy">复制</string>
     <string name="copy_success">成功复制到剪贴板</string>

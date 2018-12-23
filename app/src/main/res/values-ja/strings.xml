@@ -9,11 +9,10 @@
     <string name="download">ダウンロード</string>
     <string name="dismiss">無視する</string>
     <string name="authorize">認可された</string>
-    <string name="welcome">歓迎する</string>
     <string name="need_storage">権限を保存する必要がある</string>
-    <string name="no_storage">ストレージ特権の欠如</string>
     <string name="please_authorize">承認してください</string>
     <string name="copy">コピー</string>
     <string name="copy_success">クリップボードに正常にコピーされました</string>
     <string name="description">メディアファイルを保存するができます</string>
+    <string name="need_overlay">オーバーレイ許可が必要です</string>
 </resources>
