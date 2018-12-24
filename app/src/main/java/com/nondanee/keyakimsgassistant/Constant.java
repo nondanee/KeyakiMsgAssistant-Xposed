@@ -3,8 +3,9 @@ package com.nondanee.keyakimsgassistant;
 public class Constant {
     public static final String PACKAGE_NAME = "com.nondanee.keyakimsgassistant";
 
-    public static final String ACTION_NOTIFY = PACKAGE_NAME + ".action.notify";
-    public static final String ACTION_CHECK = PACKAGE_NAME + ".action.check";
+    public static final String ACTION_NOTIFY = ".action.notify";
+    public static final String ACTION_CHECK =  ".action.check";
+    public static final String ACTION_POPUP = ".action.popup";
 
     public static final String ACTION_DISMISS = ".action.dismiss";
     public static final String ACTION_DOWNLOAD = ".action.download";
