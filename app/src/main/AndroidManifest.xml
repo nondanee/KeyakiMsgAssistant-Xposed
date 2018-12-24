@@ -5,7 +5,6 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
 
     <application
@@ -24,14 +23,12 @@
             android:value="54" />
 
         <service
-            android:name="com.nondanee.keyakimsgassistant.Notifier"
+            android:name=".Notifier"
             android:exported="true" />
 
         <service
-            android:name="com.nondanee.keyakimsgassistant.Worker"
+            android:name=".Worker"
             android:exported="false" />
-
-
     </application>
 
 

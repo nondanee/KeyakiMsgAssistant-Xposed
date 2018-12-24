@@ -1,11 +1,11 @@
 package com.nondanee.keyakimsgassistant;
 
 import android.app.AlertDialog;
+import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.Service;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -13,6 +13,7 @@ import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Environment;
 import android.os.IBinder;
+import android.support.v4.app.JobIntentService;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.WindowManager;
@@ -25,28 +26,30 @@ import java.util.TimerTask;
  * Created by Nzix on 2017/9/9.
  */
 
-public class Notifier extends Service {
+public class Notifier extends IntentService {
 
+    private static final int JOB_ID = 1000;
     private static final String CLASS_NAME = Constant.PACKAGE_NAME + ".Notifier";
     private static final Integer COLORLESS_ICON_SET[] = {R.drawable.ic_photo, R.drawable.ic_voice, R.drawable.ic_movie};
     private static final Integer COLORED_ICON_SET[] = {R.drawable.ic_photo_colored, R.drawable.ic_voice_colored, R.drawable.ic_movie_colored};
     private static final Integer PROMPT_TEXT_SET[] = {R.string.photo_prompt, R.string.audio_prompt, R.string.video_prompt};
     private static final Integer COLOR_SET[] = {R.color.colorPhoto, R.color.colorVoice, R.color.colorMovie};
 
-    @Override
-    public IBinder onBind(Intent intent) {
-        return null;
+
+    public Notifier() {
+        super("Notifier");
     }
+//    static void enqueueWork(Context context, Intent work) {
+//        enqueueWork(context, Notifier.class, JOB_ID, work);
+//    }
 
     public static void onLaunch(Context context) {
         Intent intent = new Intent();
         intent.setAction(Constant.ACTION_CHECK);
         intent.setClassName(Constant.PACKAGE_NAME, CLASS_NAME);
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-//            context.startForegroundService(intent);
-//        else
-//            context.startService(intent);
         Log.d(Constant.DEBUG_TAG, "onLaunch");
+        context.startService(intent);
+//        enqueueWork(context, intent);
     }
 
     public static void onText(Context context, String text) {
@@ -54,11 +57,9 @@ public class Notifier extends Service {
         intent.setAction(Constant.ACTION_COPY);
         intent.setClassName(Constant.PACKAGE_NAME, CLASS_NAME);
         intent.putExtra("text", text);
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-//            context.startForegroundService(intent);
-//        else
-//            context.startService(intent);
         Log.d(Constant.DEBUG_TAG, "onText " + text);
+        context.startService(intent);
+//        enqueueWork(context, intent);
     }
 
     public static void onMedia(Context context, String id, String url, int mediaType) {
@@ -68,11 +69,9 @@ public class Notifier extends Service {
         intent.putExtra("id", id);
         intent.putExtra("url", url);
         intent.putExtra("mediaType", mediaType);
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-//            context.startForegroundService(intent);
-//        else
-//            context.startService(intent);
         Log.d(Constant.DEBUG_TAG, "onMedia " + mediaType + " " + url);
+        context.startService(intent);
+//        enqueueWork(context, intent);
     }
 
     private void requestPromptNotification(String permission) {
@@ -217,11 +216,7 @@ public class Notifier extends Service {
 //        alertDialog.show();
 //    }
 
-    public void copyPromptDialog(final String text){
-        if(!Checker.coverlayDrawable(this)) {
-            requestPromptNotification("overlay");
-            return;
-        }
+    private void copyPromptDialog(final String text){
 
         final Intent intent = new Intent(this, Worker.class);
         intent.setAction(Constant.ACTION_COPY);
@@ -246,39 +241,46 @@ public class Notifier extends Service {
         alertDialog.show();
     }
 
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
+    private void startUp(Intent intent) {
+        if (intent == null) return;
 
-        if (intent != null) {
-            String action = intent.getAction();
-            if (Constant.ACTION_CHECK.equals(action)) {
-                if (!Checker.storageAccessible(this)) {
-                    requestPromptNotification("storage");
-                }
-                else if (!Checker.coverlayDrawable((this))) {
-                    requestPromptNotification("overlay");
-                }
+        String action = intent.getAction();
+        Log.d(Constant.DEBUG_TAG, "startUp " + action);
+
+        if (Constant.ACTION_CHECK.equals(action)) {
+            if (!Checker.storageAccessible(this)) {
+                requestPromptNotification("storage");
             }
-            else if (Constant.ACTION_COPY.equals(action)) {
+            if (!Checker.coverlayDrawable(this)) {
+                requestPromptNotification("overlay");
+            }
+        }
+        else if (Constant.ACTION_COPY.equals(action)) {
+            if(!Checker.coverlayDrawable(this)) {
+                requestPromptNotification("overlay");
+            }
+            else {
                 String text = intent.getStringExtra("text");
                 copyPromptDialog(text);
             }
-            else if (Constant.ACTION_NOTIFY.equals(action)) {
-                if (!Checker.storageAccessible(this)) {
-                    requestPromptNotification("storage");
-                }
-                else {
-                    String url = intent.getStringExtra("url");
-                    int mediaType = intent.getIntExtra("mediaType", 1);
-                    String fileName = url.replaceAll("\\?\\S+$", "").replaceAll("^\\S+/", "");
+        }
+        else if (Constant.ACTION_NOTIFY.equals(action)) {
+            if (!Checker.storageAccessible(this)) {
+                requestPromptNotification("storage");
+            }
+            else {
+                String url = intent.getStringExtra("url");
+                int mediaType = intent.getIntExtra("mediaType", 1);
+                String fileName = url.replaceAll("\\?\\S+$", "").replaceAll("^\\S+/", "");
 
-                    File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/" + Constant.ALBUM_NAME + "/" + fileName);
-                    if (!file.exists()) capturePromptNotification(url, mediaType, fileName);
-                }
+                File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/" + Constant.ALBUM_NAME + "/" + fileName);
+                if (!file.exists()) capturePromptNotification(url, mediaType, fileName);
             }
         }
+    }
 
-        stopSelf(startId);
-        return START_NOT_STICKY;
+    @Override
+    protected void onHandleIntent(Intent intent) {
+        startUp(intent);
     }
 }

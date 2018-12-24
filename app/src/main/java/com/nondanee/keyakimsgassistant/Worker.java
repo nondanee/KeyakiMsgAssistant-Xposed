@@ -21,8 +21,6 @@ import java.io.File;
 public class Worker extends IntentService {
 
     public Worker() {
-        // The super call is required. The background thread that IntentService
-        // starts is labeled with the string argument you pass.
         super("Worker");
     }
 

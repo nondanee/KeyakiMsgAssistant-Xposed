@@ -39,9 +39,9 @@ public class Checker {
                 false;
     }
 
-    public static boolean storageAccessible(Context content) {
+    public static boolean storageAccessible(Context context) {
         if (Build.VERSION.SDK_INT < 23) return true;
-        else if (ContextCompat.checkSelfPermission(content,android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) return true;
+        else if (ContextCompat.checkSelfPermission(context,android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) return true;
         else return false;
     }
 
