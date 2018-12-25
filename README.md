@@ -1,18 +1,18 @@
 <img src="/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png" alt="logo" width="144" height="144" align="right" />
 
 # KeyakiMsgAssistant
-Xposed module for "欅坂46メッセー" app  
-(Without user interface)
+Xposed module for "欅坂46メッセー" app 
 
 <a href="https://www.coolapk.com/apk/com.nondanee.keyakimsgassistant"><img alt="Get it on Coolapk" src="https://user-images.githubusercontent.com/26399680/47835376-b1302200-ddde-11e8-8303-77d106cb4f02.png" height=42px /></a>
 
 ## Requirement
-- [x] Android 4.1+
+- [x] Android 5.0+
 - [x] Rooted
 - [x] Xposed framework
 
 ## Permission
 - INTERNET
+- WAKE_LOCK
 - WRITE_EXTERNAL_STORAGE
 - SYSTEM_ALERT_WINDOW
 
@@ -26,8 +26,8 @@ Xposed module for "欅坂46メッセー" app
 
 ## Reference
 
-[Ashish-Bansal/OneTapVideoDownload](https://github.com/Ashish-Bansal/OneTapVideoDownload)  
-[veeti/DisableFlagSecure](https://github.com/veeti/DisableFlagSecure)
+- [Ashish-Bansal/OneTapVideoDownload](https://github.com/Ashish-Bansal/OneTapVideoDownload)
+- [veeti/DisableFlagSecure](https://github.com/veeti/DisableFlagSecure)
 
 ## License
 

@@ -16,7 +16,6 @@ public class Receiver extends BroadcastReceiver {
         intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
         Log.d(Constant.DEBUG_TAG, "Receiver onLaunch");
         context.sendBroadcast(intent);
-//        enqueueWork(context, intent);
     }
 
     public static void onText(Context context, String text) {
@@ -27,7 +26,6 @@ public class Receiver extends BroadcastReceiver {
         intent.putExtra("text", text);
         Log.d(Constant.DEBUG_TAG, "Receiver onText " + text);
         context.sendBroadcast(intent);
-//        enqueueWork(context, intent);
     }
 
     public static void onMedia(Context context, String id, String url, int mediaType) {
