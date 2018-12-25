@@ -15,8 +15,8 @@ android {
         applicationId "com.nondanee.keyakimsgassistant"
         minSdkVersion 16
         targetSdkVersion 26
-        versionCode 13
-        versionName "2.1"
+        versionCode 15
+        versionName "3.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

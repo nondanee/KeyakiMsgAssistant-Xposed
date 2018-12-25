@@ -1,11 +1,14 @@
 package com.nondanee.keyakimsgassistant;
 
 import android.app.AlertDialog;
+import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.Service;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -14,8 +17,10 @@ import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
+import android.support.annotation.Nullable;
 import android.support.v4.app.JobIntentService;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.WindowManager;
 
@@ -27,7 +32,7 @@ import java.util.TimerTask;
  * Created by Nzix on 2017/9/9.
  */
 
-public class Notifier extends BroadcastReceiver {
+public class Notifier extends JobIntentService {
 
     private static final String CLASS_NAME = Constant.PACKAGE_NAME + ".Notifier";
     private static final Integer COLORLESS_ICON_SET[] = {R.drawable.ic_photo, R.drawable.ic_voice, R.drawable.ic_movie};
@@ -37,18 +42,21 @@ public class Notifier extends BroadcastReceiver {
 
     private void requestPromptNotification(Context context, String permission) {
         final NotificationManager notificationManager = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, Constant.CHANNEL_PERMISSION);
-        final int id = permission.equals("storage") ? 0 : 1;
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, Constant.CHANNEL_PERMISSION_ID);
+        final int id = permission.equals("storage") ? 100 : 200;
+        Log.d(Constant.DEBUG_TAG, "requestPromptNotification: " + id + " / " + permission);
 
         builder.setSmallIcon(R.drawable.ic_smile);
+//        builder.setColor(ContextCompat.getColor(context, R.color.colorPrimary));
         builder.setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher));
         builder.setContentTitle(context.getResources().getString(permission.equals("storage") ? R.string.need_storage : R.string.need_overlay));
         builder.setContentText(context.getResources().getString(R.string.please_authorize));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel notificationChannel = new NotificationChannel(Constant.CHANNEL_PERMISSION, "Permission request", NotificationManager.IMPORTANCE_HIGH);
-            notificationChannel.setVibrationPattern(new long[0]);
+            NotificationChannel notificationChannel = new NotificationChannel(Constant.CHANNEL_PERMISSION_ID, Constant.CHANNEL_PERMISSION_NAME, NotificationManager.IMPORTANCE_HIGH);
+            notificationChannel.setVibrationPattern(new long[]{ 0 });
             notificationChannel.enableVibration(true);
+            notificationChannel.setSound(null, null);
             notificationManager.createNotificationChannel(notificationChannel);
         }
 
@@ -57,17 +65,17 @@ public class Notifier extends BroadcastReceiver {
         builder.setOnlyAlertOnce(false);
         builder.setAutoCancel(true);
 
-        Intent rejectIntent = new Intent(context, Worker.class);
+        Intent rejectIntent = new Intent(context, Receiver.class);
         rejectIntent.setAction(Constant.ACTION_DISMISS);
         rejectIntent.putExtra("id", id);
-        PendingIntent rejectPendingIntent = PendingIntent.getService(context, id, rejectIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent rejectPendingIntent = PendingIntent.getBroadcast(context, id, rejectIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         builder.addAction(R.drawable.ic_reject, context.getResources().getString(R.string.reject), rejectPendingIntent);
 
-        Intent settingIntent = new Intent(context, Worker.class);
+        Intent settingIntent = new Intent(context, Receiver.class);
         settingIntent.setAction(Constant.ACTION_SETTING);
         settingIntent.putExtra("id", id);
         settingIntent.putExtra("permission", permission);
-        PendingIntent settingPendingIntent = PendingIntent.getService(context, id, settingIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent settingPendingIntent = PendingIntent.getBroadcast(context, id, settingIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         builder.setContentIntent(settingPendingIntent);
         builder.setFullScreenIntent(settingPendingIntent, true);
@@ -87,20 +95,21 @@ public class Notifier extends BroadcastReceiver {
 
     private void capturePromptNotification(Context context, String url, int mediaType, String fileName) {
         final NotificationManager notificationManager = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, Constant.CHANNEL_RESOURCE);
-        final int id = 100;
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, Constant.CHANNEL_RESOURCE_ID);
+        final int id = 10;
 
         builder.setSmallIcon(R.drawable.ic_notify);
         builder.setLargeIcon(BitmapFactory.decodeResource(context.getResources(), (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ? COLORED_ICON_SET : COLORLESS_ICON_SET)[mediaType - 1]));
         builder.setContentTitle(context.getResources().getString(PROMPT_TEXT_SET[mediaType - 1]));
         builder.setContentText(url);
-//        builder.setColor(ContextCompat.getColor(this, R.color.colorPrimary));
-//        builder.setColor(ContextCompat.getColor(this, COLOR_SET[mediaType - 1]));
+//        builder.setColor(ContextCompat.getColor(context, R.color.colorPrimary));
+//        builder.setColor(ContextCompat.getColor(context, COLOR_SET[mediaType - 1]));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel notificationChannel = new NotificationChannel(Constant.CHANNEL_RESOURCE, "Resource notify", NotificationManager.IMPORTANCE_HIGH);
-            notificationChannel.setVibrationPattern(new long[0]);
+            NotificationChannel notificationChannel = new NotificationChannel(Constant.CHANNEL_RESOURCE_ID, Constant.CHANNEL_RESOURCE_NAME, NotificationManager.IMPORTANCE_HIGH);
+            notificationChannel.setVibrationPattern(new long[]{ 0 });
             notificationChannel.enableVibration(true);
+            notificationChannel.setSound(null, null);
             notificationManager.createNotificationChannel(notificationChannel);
         }
         else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
@@ -113,19 +122,19 @@ public class Notifier extends BroadcastReceiver {
 //        builder.setOnlyAlertOnce(false);
 
         //dismiss
-        final Intent dismissIntent = new Intent(context, Worker.class);
+        final Intent dismissIntent = new Intent(context, Receiver.class);
         dismissIntent.setAction(Constant.ACTION_DISMISS);
         dismissIntent.putExtra("id", id);
-        PendingIntent dismissPendingIntent = PendingIntent.getService(context, id, dismissIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent dismissPendingIntent = PendingIntent.getBroadcast(context, id, dismissIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         builder.addAction(R.drawable.ic_ignore, context.getResources().getString(R.string.dismiss), dismissPendingIntent);
 
         //download
-        final Intent downloadIntent = new Intent(context, Worker.class); // new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        final Intent downloadIntent = new Intent(context, Receiver.class); // new Intent(Intent.ACTION_VIEW, Uri.parse(url));
         downloadIntent.setAction(Constant.ACTION_DOWNLOAD);
         downloadIntent.putExtra("url", url);
         downloadIntent.putExtra("fileName", fileName);
         downloadIntent.putExtra("id", id);
-        PendingIntent downloadPendingIntent = PendingIntent.getService(context, id, downloadIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent downloadPendingIntent = PendingIntent.getBroadcast(context, id, downloadIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         builder.addAction(R.drawable.ic_download, context.getResources().getString(R.string.download), downloadPendingIntent);
 
         //default
@@ -182,12 +191,12 @@ public class Notifier extends BroadcastReceiver {
         intent.setAction(Constant.ACTION_COPY);
         intent.putExtra("text", text);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(context, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
+        final AlertDialog.Builder builder = new AlertDialog.Builder(context, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
         builder.setMessage(text);
         builder.setNegativeButton(context.getResources().getString(R.string.copy), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                context.startService(intent);
+                Worker.enqueueWork(context, intent);
             }
         });
         builder.setPositiveButton(context.getResources().getString(R.string.dismiss), new DialogInterface.OnClickListener() {
@@ -196,9 +205,15 @@ public class Notifier extends BroadcastReceiver {
 
             }
         });
-        final AlertDialog alertDialog = builder.create();
-        alertDialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
-        alertDialog.show();
+        Handler handler = new Handler(getMainLooper());
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                final AlertDialog alertDialog = builder.create();
+                alertDialog.getWindow().setType(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ? WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY : WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+                alertDialog.show();
+            }
+        });
     }
 
     private void distributor(Context context, Intent intent) {
@@ -209,9 +224,11 @@ public class Notifier extends BroadcastReceiver {
 
         if (Constant.ACTION_CHECK.equals(action)) {
             if (!Checker.storageAccessible(context)) {
+                Log.d(Constant.DEBUG_TAG, "distributor: storage Notification");
                 requestPromptNotification(context, "storage");
             }
             if (!Checker.coverlayDrawable(context)) {
+                Log.d(Constant.DEBUG_TAG, "distributor: overlay Notification");
                 requestPromptNotification(context, "overlay");
             }
         }
@@ -244,7 +261,11 @@ public class Notifier extends BroadcastReceiver {
         intent.setAction(Constant.ACTION_CHECK);
         intent.setClassName(Constant.PACKAGE_NAME, CLASS_NAME);
         Log.d(Constant.DEBUG_TAG, "onLaunch");
-        context.sendBroadcast(intent);
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+//            context.startForegroundService(intent);
+//        else
+//            context.startService(intent);
+        enqueueWork(context, intent);
     }
 
     public static void onText(Context context, String text) {
@@ -253,7 +274,11 @@ public class Notifier extends BroadcastReceiver {
         intent.setClassName(Constant.PACKAGE_NAME, CLASS_NAME);
         intent.putExtra("text", text);
         Log.d(Constant.DEBUG_TAG, "onText " + text);
-        context.sendBroadcast(intent);
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+//            context.startForegroundService(intent);
+//        else
+//            context.startService(intent);
+        enqueueWork(context, intent);
     }
 
     public static void onMedia(Context context, String id, String url, int mediaType) {
@@ -264,12 +289,48 @@ public class Notifier extends BroadcastReceiver {
         intent.putExtra("url", url);
         intent.putExtra("mediaType", mediaType);
         Log.d(Constant.DEBUG_TAG, "onMedia " + mediaType + " " + url);
-        context.sendBroadcast(intent);
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+//            context.startForegroundService(intent);
+//        else
+//            context.startService(intent);
+        enqueueWork(context, intent);
+    }
+
+    public static final int JOB_ID = 100;
+
+    public static void enqueueWork(Context context, Intent work) {
+        enqueueWork(context, Notifier.class, JOB_ID, work);
     }
 
     @Override
-    public void onReceive(final Context context, Intent intent) {
-        Log.d(Constant.DEBUG_TAG, "onReceive");
-        distributor(context, intent);
+    protected void onHandleWork(Intent intent) {
+        distributor(this, intent);
     }
+
+//    public Notifier() {
+//        super("Notifier");
+//    }
+//    @Override
+//    protected void onHandleIntent(Intent intent) {
+//        distributor(this, intent);
+//    }
+
+//    @Override
+//    public IBinder onBind(Intent intent) {
+//        return null;
+//    }
+//    @Override
+//    public int onStartCommand(Intent intent, int flags, int startId) {
+//        distributor(this, intent);
+//        stopSelf(startId);
+//        return START_NOT_STICKY;
+//    }
+
+//    @Override
+//    public void onCreate(){
+//        super.onCreate();
+//        Notification notification = Checker.serviceHolder(this);
+//        startForeground(1, notification);
+//    }
+
 }

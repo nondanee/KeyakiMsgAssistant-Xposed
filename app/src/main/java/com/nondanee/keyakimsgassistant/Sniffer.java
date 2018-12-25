@@ -42,7 +42,7 @@ public class Sniffer implements IXposedHookLoadPackage {
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                     Context context = AndroidAppHelper.currentApplication().getApplicationContext();
                     gestureListener.bind(context);
-                    Notifier.onLaunch(context);
+                    Receiver.onLaunch(context);
                 }
             }
         );
@@ -78,7 +78,7 @@ public class Sniffer implements IXposedHookLoadPackage {
                     String id = (String) param.args[1];
                     String url = (String) param.args[2];
                     Context context = AndroidAppHelper.currentApplication().getApplicationContext();
-                    Notifier.onMedia(context,id,url,1);
+                    Receiver.onMedia(context,id,url,1);
                 }
             }
         );
@@ -115,7 +115,7 @@ public class Sniffer implements IXposedHookLoadPackage {
                     String id = (String) param.args[1];
                     String url = (String) param.args[2];
                     Context context = AndroidAppHelper.currentApplication().getApplicationContext();
-                    Notifier.onMedia(context,id,url,3);
+                    Receiver.onMedia(context,id,url,3);
                 }
             }
         );
@@ -133,7 +133,7 @@ public class Sniffer implements IXposedHookLoadPackage {
                     String id = (String) XposedHelpers.callMethod(param.args[0],"getTalkId");
                     String url = (String) param.args[1];
                     Context context = AndroidAppHelper.currentApplication().getApplicationContext();
-                    Notifier.onMedia(context,id,url,2);
+                    Receiver.onMedia(context,id,url,2);
                 }
             }
         );
@@ -274,7 +274,7 @@ public class Sniffer implements IXposedHookLoadPackage {
             String viewName = target.getContext().getResources().getResourceEntryName(resourceId);
             if (viewName.equals("text") || viewName.equals("singleLineText")) {
                 String text = textView.getText().toString();
-                Notifier.onText(target.getContext(), text);
+                Receiver.onText(target.getContext(), text);
             }
         }
 

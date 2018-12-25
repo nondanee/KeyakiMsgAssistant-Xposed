@@ -3,7 +3,7 @@
     <color name="colorPrimary">#3CB14A</color>
     <color name="colorPrimaryDark">#308D3B</color>
     <color name="colorAccent">#CCCCCC</color>
-    <color name="colorPhoto">#009ECD63</color>
-    <color name="colorMovie">#00FFB449</color>
-    <color name="colorVoice">#0056BFC3</color>
+    <color name="colorPhoto">#008FB0DB</color>
+    <color name="colorMovie">#0092D8E7</color>
+    <color name="colorVoice">#0082D87E</color>
 </resources>
