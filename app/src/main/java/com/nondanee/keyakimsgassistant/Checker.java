@@ -70,18 +70,19 @@ public class Checker {
         context.startActivity(intent);
     }
 
-//    public static Notification serviceHolder(Context context) {
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//            NotificationManager notificationManager = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
-//            NotificationChannel notificationChannel = new NotificationChannel(Constant.CHANNEL_DEFAULT_ID, Constant.CHANNEL_DEFAULT_NAME, NotificationManager.IMPORTANCE_LOW);
-//            notificationChannel.setVibrationPattern(new long[0]);
-//            notificationChannel.enableVibration(true);
-//            notificationManager.createNotificationChannel(notificationChannel);
-//        }
-//        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, Constant.CHANNEL_PERMISSION_ID);
-//        Notification notification = builder.setSmallIcon(R.drawable.ic_notify).setVibrate(new long[0]).setPriority(Notification.PRIORITY_MIN).build();
-//        Log.d(Constant.DEBUG_TAG, "serviceHolder: it should no vibration");
-//        return notification;
-//    }
+    public static Notification serviceHolder(Context context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationManager notificationManager = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
+            NotificationChannel notificationChannel = new NotificationChannel(Constant.CHANNEL_DEFAULT_ID, Constant.CHANNEL_DEFAULT_NAME, NotificationManager.IMPORTANCE_LOW);
+            notificationChannel.setVibrationPattern(new long[]{ 0 });
+            notificationChannel.enableVibration(true);
+            notificationChannel.setSound(null, null);
+            notificationManager.createNotificationChannel(notificationChannel);
+        }
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, Constant.CHANNEL_PERMISSION_ID);
+        Notification notification = builder.setSmallIcon(R.drawable.ic_notify).setVibrate(new long[0]).setPriority(Notification.PRIORITY_MIN).build();
+        Log.d(Constant.DEBUG_TAG, "serviceHolder: it should no vibration");
+        return notification;
+    }
 
 }

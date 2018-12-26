@@ -7,8 +7,6 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -17,7 +15,6 @@ import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
-import android.support.annotation.Nullable;
 import android.support.v4.app.JobIntentService;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
@@ -44,7 +41,6 @@ public class Notifier extends JobIntentService {
         final NotificationManager notificationManager = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, Constant.CHANNEL_PERMISSION_ID);
         final int id = permission.equals("storage") ? 100 : 200;
-        Log.d(Constant.DEBUG_TAG, "requestPromptNotification: " + id + " / " + permission);
 
         builder.setSmallIcon(R.drawable.ic_smile);
 //        builder.setColor(ContextCompat.getColor(context, R.color.colorPrimary));
@@ -224,11 +220,9 @@ public class Notifier extends JobIntentService {
 
         if (Constant.ACTION_CHECK.equals(action)) {
             if (!Checker.storageAccessible(context)) {
-                Log.d(Constant.DEBUG_TAG, "distributor: storage Notification");
                 requestPromptNotification(context, "storage");
             }
             if (!Checker.coverlayDrawable(context)) {
-                Log.d(Constant.DEBUG_TAG, "distributor: overlay Notification");
                 requestPromptNotification(context, "overlay");
             }
         }
