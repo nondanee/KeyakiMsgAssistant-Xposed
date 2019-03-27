@@ -122,7 +122,7 @@ public class Sniffer implements IXposedHookLoadPackage {
 
         // VOICE
         XposedHelpers.findAndHookMethod(
-            "jp.co.sonymusic.communication.keyakizaka.common.dr",
+            "jp.co.sonymusic.communication.keyakizaka.common.de",
             loadPackageParam.classLoader,
             "a",
             loadPackageParam.classLoader.loadClass("jp.co.sonymusic.communication.keyakizaka.db.dto.TalkInfo"),

@@ -1,9 +1,9 @@
 <img src="/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png" alt="logo" width="144" height="144" align="right" />
 
 # KeyakiMsgAssistant
-Xposed module for "欅坂46メッセー" app 
+Xposed module for "欅坂46/日向坂46 メッセージ" app
 
-<a href="https://www.coolapk.com/apk/com.nondanee.keyakimsgassistant"><img alt="Get it on Coolapk" src="https://user-images.githubusercontent.com/26399680/47835376-b1302200-ddde-11e8-8303-77d106cb4f02.png" height=42px /></a>
+<a href="https://www.coolapk.com/apk/com.nondanee.keyakimsgassistant"><img src="https://user-images.githubusercontent.com/26399680/47835376-b1302200-ddde-11e8-8303-77d106cb4f02.png" height=42px /></a>
 
 ## Requirement
 - [x] Android 5.0+
@@ -18,11 +18,11 @@ Xposed module for "欅坂46メッセー" app
 
 ## Feature
 - Add double-tap-to-copy function for text
-- Help to download photos, audios, videos in messages
+- Click to download photo, audio, video in messages
 - Lift the restriction on screenshot and screenrecord
 
 ## Screenshot
-<img alt="text" src="screenshots/text.jpg" width="25%"/><img alt="photo" src="screenshots/photo.jpg" width="25%"/><img alt="video" src="screenshots/video.jpg" width="25%"/><img alt="audio" src="screenshots/audio.jpg" width="25%"/>
+<img alt="text" src="https://user-images.githubusercontent.com/26399680/55107355-12e58580-510c-11e9-92b5-01888a67fc20.jpg" width="25%"/><img alt="photo" src="https://user-images.githubusercontent.com/26399680/55107354-124cef00-510c-11e9-9b3f-6204e27eb296.jpg" width="25%"/><img alt="video" src="https://user-images.githubusercontent.com/26399680/55107356-12e58580-510c-11e9-84af-c22a999e6d10.jpg" width="25%"/><img alt="audio" src="https://user-images.githubusercontent.com/26399680/55107353-11b45880-510c-11e9-928d-425be2dac12c.jpg" width="25%"/>
 
 ## Reference
 
