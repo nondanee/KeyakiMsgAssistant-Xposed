@@ -12,7 +12,6 @@ Xposed module for "欅坂46/日向坂46 メッセージ" app
 
 ## Permission
 - INTERNET
-- WAKE_LOCK
 - WRITE_EXTERNAL_STORAGE
 - SYSTEM_ALERT_WINDOW
 
