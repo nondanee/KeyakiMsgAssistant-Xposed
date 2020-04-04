@@ -38,16 +38,15 @@ public class Checker {
     }
 
     public static void storagePermissionRequest(Context context) {
-        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        Uri uri = Uri.fromParts("package", context.getPackageName(), null);
-        intent.setData(uri);
+        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            .setData(Uri.fromParts("package", context.getPackageName(), null));
         context.startActivity(intent);
     }
 
     public static void overlayPermissionRequest(Context context) {
-        Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION)
+            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
 

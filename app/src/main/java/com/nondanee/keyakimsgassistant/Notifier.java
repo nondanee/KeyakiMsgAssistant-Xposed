@@ -183,9 +183,9 @@ public class Notifier extends JobIntentService {
 //    }
 
     private void copyPromptDialog(final Context context, final String text) {
-        final Intent intent = new Intent(context, Worker.class);
-        intent.setAction(Constant.ACTION_COPY);
-        intent.putExtra("text", text);
+        final Intent intent = new Intent(context, Worker.class)
+            .setAction(Constant.ACTION_COPY)
+            .putExtra("text", text);
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(context, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
         builder.setMessage(text);
@@ -251,9 +251,9 @@ public class Notifier extends JobIntentService {
     }
 
     public static void onLaunch(Context context) {
-        Intent intent = new Intent();
-        intent.setAction(Constant.ACTION_CHECK);
-        intent.setClassName(Constant.PACKAGE_NAME, CLASS_NAME);
+        Intent intent = new Intent()
+            .setAction(Constant.ACTION_CHECK)
+            .setClassName(Constant.PACKAGE_NAME, CLASS_NAME);
         Log.d(Constant.DEBUG_TAG, "onLaunch");
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
 //            context.startForegroundService(intent);
@@ -263,10 +263,10 @@ public class Notifier extends JobIntentService {
     }
 
     public static void onText(Context context, String text) {
-        Intent intent = new Intent();
-        intent.setAction(Constant.ACTION_POPUP);
-        intent.setClassName(Constant.PACKAGE_NAME, CLASS_NAME);
-        intent.putExtra("text", text);
+        Intent intent = new Intent()
+            .setAction(Constant.ACTION_POPUP)
+            .setClassName(Constant.PACKAGE_NAME, CLASS_NAME)
+            .putExtra("text", text);
         Log.d(Constant.DEBUG_TAG, "onText " + text);
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
 //            context.startForegroundService(intent);
@@ -276,12 +276,12 @@ public class Notifier extends JobIntentService {
     }
 
     public static void onMedia(Context context, String id, String url, int mediaType) {
-        Intent intent = new Intent();
-        intent.setAction(Constant.ACTION_NOTIFY);
-        intent.setClassName(Constant.PACKAGE_NAME, CLASS_NAME);
-        intent.putExtra("id", id);
-        intent.putExtra("url", url);
-        intent.putExtra("mediaType", mediaType);
+        Intent intent = new Intent()
+            .setAction(Constant.ACTION_NOTIFY)
+            .setClassName(Constant.PACKAGE_NAME, CLASS_NAME)
+            .putExtra("id", id)
+            .putExtra("url", url)
+            .putExtra("mediaType", mediaType);
         Log.d(Constant.DEBUG_TAG, "onMedia " + mediaType + " " + url);
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
 //            context.startForegroundService(intent);
