@@ -1,17 +1,15 @@
 package com.nondanee.keyakimsgassistant;
 
 import android.app.DownloadManager;
-import android.app.IntentService;
 import android.app.NotificationManager;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
-import android.support.v4.app.JobIntentService;
+import androidx.core.app.JobIntentService;
 import android.util.Log;
 import android.widget.Toast;
 
