@@ -1,7 +1,9 @@
 name: Android CI
 
 on:
-  push: tags
+  push:
+    tags:
+      - '*'
 
 jobs:
   build:
