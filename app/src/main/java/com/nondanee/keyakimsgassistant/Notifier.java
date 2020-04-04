@@ -32,50 +32,53 @@ import java.util.TimerTask;
 public class Notifier extends JobIntentService {
 
     private static final String CLASS_NAME = Constant.PACKAGE_NAME + ".Notifier";
-    private static final Integer COLORLESS_ICON_SET[] = {R.drawable.ic_photo, R.drawable.ic_voice, R.drawable.ic_movie};
-    private static final Integer COLORED_ICON_SET[] = {R.drawable.ic_photo_colored, R.drawable.ic_voice_colored, R.drawable.ic_movie_colored};
-    private static final Integer PROMPT_TEXT_SET[] = {R.string.photo_prompt, R.string.audio_prompt, R.string.video_prompt};
-    private static final Integer COLOR_SET[] = {R.color.colorPhoto, R.color.colorVoice, R.color.colorMovie};
+    private static final Integer COLORLESS_ICON_SET[] = { R.drawable.ic_photo, R.drawable.ic_voice, R.drawable.ic_movie };
+    private static final Integer COLORED_ICON_SET[] = { R.drawable.ic_photo_colored, R.drawable.ic_voice_colored, R.drawable.ic_movie_colored };
+    private static final Integer PROMPT_TEXT_SET[] = { R.string.photo_prompt, R.string.audio_prompt, R.string.video_prompt };
+    private static final Integer COLOR_SET[] = { R.color.colorPhoto, R.color.colorVoice, R.color.colorMovie };
+
+    private void bindNotificationChannel(NotificationManager notificationManager, String id, CharSequence name, int importance) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return;
+        NotificationChannel notificationChannel = new NotificationChannel(id, name, importance);
+        notificationChannel.setVibrationPattern(new long[]{ 0 });
+        notificationChannel.enableVibration(true);
+        notificationChannel.setSound(null, null);
+        notificationManager.createNotificationChannel(notificationChannel);
+    }
 
     private void requestPromptNotification(Context context, String permission) {
-        final NotificationManager notificationManager = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, Constant.CHANNEL_PERMISSION_ID);
         final int id = permission.equals("storage") ? 100 : 200;
+        final NotificationManager notificationManager = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
+        bindNotificationChannel(notificationManager, Constant.CHANNEL_PERMISSION_ID, Constant.CHANNEL_PERMISSION_NAME, NotificationManager.IMPORTANCE_HIGH);
 
-        builder.setSmallIcon(R.drawable.ic_smile);
-//        builder.setColor(ContextCompat.getColor(context, R.color.colorPrimary));
-        builder.setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher));
-        builder.setContentTitle(context.getResources().getString(permission.equals("storage") ? R.string.need_storage : R.string.need_overlay));
-        builder.setContentText(context.getResources().getString(R.string.please_authorize));
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, Constant.CHANNEL_PERMISSION_ID)
+            .setSmallIcon(R.drawable.ic_smile)
+//            .setColor(ContextCompat.getColor(context, R.color.colorPrimary))
+            .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher))
+            .setContentTitle(context.getResources().getString(permission.equals("storage") ? R.string.need_storage : R.string.need_overlay))
+            .setContentText(context.getResources().getString(R.string.please_authorize))
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel notificationChannel = new NotificationChannel(Constant.CHANNEL_PERMISSION_ID, Constant.CHANNEL_PERMISSION_NAME, NotificationManager.IMPORTANCE_HIGH);
-            notificationChannel.setVibrationPattern(new long[]{ 0 });
-            notificationChannel.enableVibration(true);
-            notificationChannel.setSound(null, null);
-            notificationManager.createNotificationChannel(notificationChannel);
-        }
+            .setPriority(Notification.PRIORITY_HIGH)
+            .setOngoing(false)
+            .setOnlyAlertOnce(false)
+            .setAutoCancel(true);
 
-        builder.setPriority(Notification.PRIORITY_HIGH);
-        builder.setOngoing(false);
-        builder.setOnlyAlertOnce(false);
-        builder.setAutoCancel(true);
-
-        Intent rejectIntent = new Intent(context, Receiver.class);
-        rejectIntent.setAction(Constant.ACTION_DISMISS);
-        rejectIntent.putExtra("id", id);
+        Intent rejectIntent = new Intent(context, Receiver.class)
+            .setAction(Constant.ACTION_DISMISS)
+            .putExtra("id", id);
         PendingIntent rejectPendingIntent = PendingIntent.getBroadcast(context, id, rejectIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        builder.addAction(R.drawable.ic_reject, context.getResources().getString(R.string.reject), rejectPendingIntent);
 
-        Intent settingIntent = new Intent(context, Receiver.class);
-        settingIntent.setAction(Constant.ACTION_SETTING);
-        settingIntent.putExtra("id", id);
-        settingIntent.putExtra("permission", permission);
+        Intent settingIntent = new Intent(context, Receiver.class)
+            .setAction(Constant.ACTION_SETTING)
+            .putExtra("id", id)
+            .putExtra("permission", permission);
         PendingIntent settingPendingIntent = PendingIntent.getBroadcast(context, id, settingIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        builder.setContentIntent(settingPendingIntent);
-        builder.setFullScreenIntent(settingPendingIntent, true);
-        builder.addAction(R.drawable.ic_sure, context.getResources().getString(R.string.authorize), settingPendingIntent);
+        builder
+            .setContentIntent(settingPendingIntent)
+            .setFullScreenIntent(settingPendingIntent, true)
+            .addAction(R.drawable.ic_reject, context.getResources().getString(R.string.reject), rejectPendingIntent)
+            .addAction(R.drawable.ic_sure, context.getResources().getString(R.string.authorize), settingPendingIntent);
 
         notificationManager.notify(id, builder.build());
 
@@ -90,53 +93,43 @@ public class Notifier extends JobIntentService {
     }
 
     private void capturePromptNotification(Context context, String url, int mediaType, String fileName) {
-        final NotificationManager notificationManager = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, Constant.CHANNEL_RESOURCE_ID);
         final int id = 10;
+        final NotificationManager notificationManager = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
+        bindNotificationChannel(notificationManager, Constant.CHANNEL_RESOURCE_ID, Constant.CHANNEL_RESOURCE_NAME, NotificationManager.IMPORTANCE_HIGH);
 
-        builder.setSmallIcon(R.drawable.ic_notify);
-        builder.setLargeIcon(BitmapFactory.decodeResource(context.getResources(), (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ? COLORED_ICON_SET : COLORLESS_ICON_SET)[mediaType - 1]));
-        builder.setContentTitle(context.getResources().getString(PROMPT_TEXT_SET[mediaType - 1]));
-        builder.setContentText(url);
-//        builder.setColor(ContextCompat.getColor(context, R.color.colorPrimary));
-//        builder.setColor(ContextCompat.getColor(context, COLOR_SET[mediaType - 1]));
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, Constant.CHANNEL_RESOURCE_ID)
+            .setSmallIcon(R.drawable.ic_notify)
+            .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ? COLORED_ICON_SET : COLORLESS_ICON_SET)[mediaType - 1]))
+            .setContentTitle(context.getResources().getString(PROMPT_TEXT_SET[mediaType - 1]))
+            .setContentText(url)
+//            .setColor(ContextCompat.getColor(context, R.color.colorPrimary))
+//            .setColor(ContextCompat.getColor(context, COLOR_SET[mediaType - 1]))
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel notificationChannel = new NotificationChannel(Constant.CHANNEL_RESOURCE_ID, Constant.CHANNEL_RESOURCE_NAME, NotificationManager.IMPORTANCE_HIGH);
-            notificationChannel.setVibrationPattern(new long[]{ 0 });
-            notificationChannel.enableVibration(true);
-            notificationChannel.setSound(null, null);
-            notificationManager.createNotificationChannel(notificationChannel);
-        }
-        else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            builder.setVibrate(new long[0]);
-        }
+            .setVibrate(new long[0])
+            .setPriority(Notification.PRIORITY_HIGH)
+            .setAutoCancel(true);
+//            .setOngoing(false)
+//            .setOnlyAlertOnce(false)
 
-        builder.setPriority(Notification.PRIORITY_HIGH);
-        builder.setAutoCancel(true);
-//        builder.setOngoing(false);
-//        builder.setOnlyAlertOnce(false);
-
-        //dismiss
         final Intent dismissIntent = new Intent(context, Receiver.class);
-        dismissIntent.setAction(Constant.ACTION_DISMISS);
-        dismissIntent.putExtra("id", id);
+        dismissIntent.setAction(Constant.ACTION_DISMISS)
+            .putExtra("id", id);
         PendingIntent dismissPendingIntent = PendingIntent.getBroadcast(context, id, dismissIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        builder.addAction(R.drawable.ic_ignore, context.getResources().getString(R.string.dismiss), dismissPendingIntent);
 
-        //download
-        final Intent downloadIntent = new Intent(context, Receiver.class); // new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-        downloadIntent.setAction(Constant.ACTION_DOWNLOAD);
-        downloadIntent.putExtra("url", url);
-        downloadIntent.putExtra("fileName", fileName);
-        downloadIntent.putExtra("id", id);
+        final Intent downloadIntent = new Intent(context, Receiver.class) // new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            .setAction(Constant.ACTION_DOWNLOAD)
+            .putExtra("url", url)
+            .putExtra("fileName", fileName)
+            .putExtra("id", id);
         PendingIntent downloadPendingIntent = PendingIntent.getBroadcast(context, id, downloadIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        builder.addAction(R.drawable.ic_download, context.getResources().getString(R.string.download), downloadPendingIntent);
 
-        //default
         PendingIntent pendingIntent = PendingIntent.getActivity(context, id, new Intent(), 0);
-        builder.setContentIntent(pendingIntent);
-//        builder.setFullScreenIntent(pendingIntent, true);
+
+        builder
+            .setContentIntent(pendingIntent)
+//            .setFullScreenIntent(pendingIntent, true)
+            .addAction(R.drawable.ic_ignore, context.getResources().getString(R.string.dismiss), dismissPendingIntent)
+            .addAction(R.drawable.ic_download, context.getResources().getString(R.string.download), downloadPendingIntent);
 
         notificationManager.notify(id, builder.build());
 
@@ -152,14 +145,14 @@ public class Notifier extends JobIntentService {
 
 //    public void downloadPromptDialog(final String url, int mediaType, final String fileName) {
 //        if (!Checker.overlayDrawable(this)) {
-//            requestPromptNotification("overlay");
+//            requestPromptNotification(this, "overlay");
 //            return;
 //        }
 //
-//        final Intent intent = new Intent(this, Worker.class);
-//        intent.setAction(Constant.ACTION_DOWNLOAD);
-//        intent.putExtra("url", url);
-//        intent.putExtra("fileName", fileName);
+//        final Intent intent = new Intent(this, Worker.class)
+//            .setAction(Constant.ACTION_DOWNLOAD)
+//            .putExtra("url", url)
+//            .putExtra("fileName", fileName);
 //
 //        AlertDialog.Builder builder = new AlertDialog.Builder(this, AlertDialog.THEME_DEVICE_DEFAULT_LIGHT);
 //        builder.setTitle(getResources().getString(PROMPT_TEXT_SET[mediaType - 1]));
