@@ -108,7 +108,7 @@ public class Notifier extends JobIntentService {
             notificationChannel.setSound(null, null);
             notificationManager.createNotificationChannel(notificationChannel);
         }
-        else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+        else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             builder.setVibrate(new long[0]);
         }
 
@@ -150,8 +150,8 @@ public class Notifier extends JobIntentService {
         timer.schedule( task , 5*1000 );
     }
 
-//    public void downloadPromptDialog(final String url, int mediaType, final String fileName){
-//        if(!Checker.coverlayDrawable(this)) {
+//    public void downloadPromptDialog(final String url, int mediaType, final String fileName) {
+//        if (!Checker.overlayDrawable(this)) {
 //            requestPromptNotification("overlay");
 //            return;
 //        }
@@ -182,7 +182,7 @@ public class Notifier extends JobIntentService {
 //        alertDialog.show();
 //    }
 
-    private void copyPromptDialog(final Context context, final String text){
+    private void copyPromptDialog(final Context context, final String text) {
         final Intent intent = new Intent(context, Worker.class);
         intent.setAction(Constant.ACTION_COPY);
         intent.putExtra("text", text);
@@ -222,12 +222,12 @@ public class Notifier extends JobIntentService {
             if (!Checker.storageAccessible(context)) {
                 requestPromptNotification(context, "storage");
             }
-            if (!Checker.coverlayDrawable(context)) {
+            if (!Checker.overlayDrawable(context)) {
                 requestPromptNotification(context, "overlay");
             }
         }
         else if (Constant.ACTION_POPUP.equals(action)) {
-            if(!Checker.coverlayDrawable(context)) {
+            if (!Checker.overlayDrawable(context)) {
                 requestPromptNotification(context, "overlay");
             }
             else {
@@ -321,7 +321,7 @@ public class Notifier extends JobIntentService {
 //    }
 
 //    @Override
-//    public void onCreate(){
+//    public void onCreate() {
 //        super.onCreate();
 //        Notification notification = Checker.serviceHolder(this);
 //        startForeground(1, notification);

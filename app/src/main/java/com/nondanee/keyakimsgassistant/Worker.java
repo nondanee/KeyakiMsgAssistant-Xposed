@@ -45,7 +45,7 @@ public class Worker extends JobIntentService {
         });
     }
 
-    private void downloadFile(Context context, String url, String fileName){
+    private void downloadFile(Context context, String url, String fileName) {
         if (!Checker.storageAccessible(context)) return;
         try {
             File album = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getAbsolutePath() + "/" + Constant.ALBUM_NAME + "/");
@@ -76,22 +76,22 @@ public class Worker extends JobIntentService {
         String action = intent.getAction();
         NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
-        if(Constant.ACTION_DOWNLOAD.equals(action)) {
+        if (Constant.ACTION_DOWNLOAD.equals(action)) {
             int id = intent.getIntExtra("id", 0);
             String url = intent.getStringExtra("url");
             String fileName = intent.getStringExtra("fileName");
             notificationManager.cancel(id);
             downloadFile(this, url, fileName);
         }
-        else if(Constant.ACTION_COPY.equals(action)) {
+        else if (Constant.ACTION_COPY.equals(action)) {
             String text = intent.getStringExtra("text");
             copyText(this, text);
         }
-        else if(Constant.ACTION_DISMISS.equals(action)) {
+        else if (Constant.ACTION_DISMISS.equals(action)) {
             int id = intent.getIntExtra("id", 0);
             notificationManager.cancel(id);
         }
-        else if(Constant.ACTION_SETTING.equals(action)){
+        else if (Constant.ACTION_SETTING.equals(action)) {
             int id = intent.getIntExtra("id", 0);
             String permission = intent.getStringExtra("permission");
             notificationManager.cancel(id);

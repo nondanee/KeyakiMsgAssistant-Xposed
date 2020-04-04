@@ -25,32 +25,13 @@ import java.util.Properties;
 
 public class Checker {
 
-    private static final String KEY_MIUI_VERSION_CODE = "ro.miui.ui.version.code";
-    private static final String KEY_MIUI_VERSION_NAME = "ro.miui.ui.version.name";
-    private static final String KEY_MIUI_INTERNAL_STORAGE = "ro.miui.internal.storage";
-
-    public static boolean isMiuiRom() {
-        Properties prop = new Properties();
-        try {
-            prop.load(new FileInputStream(new File(Environment.getRootDirectory(), "build.prop")));
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
-        return prop.getProperty(KEY_MIUI_VERSION_CODE, null) != null ||
-                prop.getProperty(KEY_MIUI_VERSION_NAME, null) != null ||
-                prop.getProperty(KEY_MIUI_INTERNAL_STORAGE, null) != null ||
-                false;
-    }
-
     public static boolean storageAccessible(Context context) {
         if (Build.VERSION.SDK_INT < 23) return true;
         else if (ContextCompat.checkSelfPermission(context, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) return true;
         else return false;
     }
 
-    public static boolean coverlayDrawable(Context context) {
+    public static boolean overlayDrawable(Context context) {
         if (Build.VERSION.SDK_INT < 23) return true;
         else if (Settings.canDrawOverlays(context)) return true;
         else return false;
@@ -79,9 +60,12 @@ public class Checker {
             notificationChannel.setSound(null, null);
             notificationManager.createNotificationChannel(notificationChannel);
         }
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, Constant.CHANNEL_PERMISSION_ID);
-        Notification notification = builder.setSmallIcon(R.drawable.ic_notify).setVibrate(new long[0]).setPriority(Notification.PRIORITY_MIN).build();
-        Log.d(Constant.DEBUG_TAG, "serviceHolder: it should no vibration");
+        Notification notification = new NotificationCompat.Builder(context, Constant.CHANNEL_PERMISSION_ID)
+            .setSmallIcon(R.drawable.ic_notify)
+            .setVibrate(new long[0])
+            .setPriority(Notification.PRIORITY_MIN)
+            .build();
+        Log.d(Constant.DEBUG_TAG, "serviceHolder: should be no vibration");
         return notification;
     }
 
