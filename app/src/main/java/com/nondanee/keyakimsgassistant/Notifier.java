@@ -244,7 +244,7 @@ public class Notifier extends JobIntentService {
                 int mediaType = intent.getIntExtra("mediaType", 1);
                 String fileName = url.replaceAll("\\?\\S+$", "").replaceAll("^\\S+/", "");
 
-                File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/" + Constant.ALBUM_NAME + "/" + fileName);
+                File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), Constant.ALBUM_NAME + File.separator + fileName);
                 if (!file.exists()) capturePromptNotification(context, url, mediaType, fileName);
             }
         }

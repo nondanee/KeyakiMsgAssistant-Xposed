@@ -48,14 +48,14 @@ public class Worker extends JobIntentService {
     private void downloadFile(Context context, String url, String fileName) {
         if (!Checker.storageAccessible(context)) return;
         try {
-            File album = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getAbsolutePath() + "/" + Constant.ALBUM_NAME + "/");
+            File album = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), Constant.ALBUM_NAME);
             if (!album.exists()) album.mkdir();
 
-            File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getAbsolutePath() + "/" + Constant.ALBUM_NAME + "/" + fileName);
+            File file = new File(album, fileName);
             if (file.exists()) return;
 
             DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
-            request.setDestinationInExternalPublicDir(Environment.DIRECTORY_PICTURES, Constant.ALBUM_NAME + "/" + fileName);
+            request.setDestinationInExternalPublicDir(Environment.DIRECTORY_PICTURES, Constant.ALBUM_NAME + File.separator + fileName);
 
             request.setTitle(fileName);
             request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
@@ -75,6 +75,7 @@ public class Worker extends JobIntentService {
 
         String action = intent.getAction();
         NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        Log.d(Constant.DEBUG_TAG, "onProcess: " + action);
 
         if (Constant.ACTION_DOWNLOAD.equals(action)) {
             int id = intent.getIntExtra("id", 0);
