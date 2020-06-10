@@ -66,17 +66,19 @@ public class Sniffer implements IXposedHookLoadPackage {
 
         // PHOTO
         XposedHelpers.findAndHookMethod(
-            "jp.co.sonymusic.communication.keyakizaka.activity.ActivityShowPhoto",
+            "com.sonydna.messages.app.activity.ActivityShowPhoto",
             loadPackageParam.classLoader,
             "a",
             Activity.class,
+            int.class,
             String.class,
             String.class,
+            boolean.class,
             new XC_MethodHook() {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    String id = (String) param.args[1];
-                    String url = (String) param.args[2];
+                    String id = (String) param.args[2];
+                    String url = (String) param.args[3];
                     Context context = AndroidAppHelper.currentApplication().getApplicationContext();
                     Receiver.onMedia(context, id, url, 1);
                 }
@@ -102,18 +104,19 @@ public class Sniffer implements IXposedHookLoadPackage {
 
         // MOVIE
         XposedHelpers.findAndHookMethod(
-            "jp.co.sonymusic.communication.keyakizaka.activity.ActivityPlayMovie",
+            "com.sonydna.messages.app.activity.ActivityPlayMovie",
             loadPackageParam.classLoader,
             "a",
             Activity.class,
+            int.class,
             String.class,
             String.class,
             MediaPlayer.OnPreparedListener.class,
             new XC_MethodHook() {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    String id = (String) param.args[1];
-                    String url = (String) param.args[2];
+                    String id = (String) param.args[2];
+                    String url = (String) param.args[3];
                     Context context = AndroidAppHelper.currentApplication().getApplicationContext();
                     Receiver.onMedia(context, id, url, 3);
                 }
@@ -122,18 +125,19 @@ public class Sniffer implements IXposedHookLoadPackage {
 
         // VOICE
         XposedHelpers.findAndHookMethod(
-            "jp.co.sonymusic.communication.keyakizaka.common.de",
+            "e.a.a.a.a.k1",
             loadPackageParam.classLoader,
             "a",
-            loadPackageParam.classLoader.loadClass("jp.co.sonymusic.communication.keyakizaka.db.dto.TalkInfo"),
+//            loadPackageParam.classLoader.loadClass("com.sonydna.messages.app.db.dto.TalkInfo"),
+            String.class,
             String.class,
             new XC_MethodHook() {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    String id = (String) XposedHelpers.callMethod(param.args[0], "getTalkId");
+//                    String id = (String) XposedHelpers.callMethod(param.args[0], "getTalkId");
                     String url = (String) param.args[1];
                     Context context = AndroidAppHelper.currentApplication().getApplicationContext();
-                    Receiver.onMedia(context, id, url, 2);
+                    Receiver.onMedia(context, "unknown", url, 2);
                 }
             }
         );
