@@ -47,22 +47,24 @@ public class Sniffer implements IXposedHookLoadPackage {
             }
         );
 
-//        PHOTO
-//        XposedHelpers.findAndHookMethod(
-//            "jp.co.sonymusic.communication.keyakizaka.activity.ActivityShowPhoto",
-//            loadPackageParam.classLoader,
-//            "a",
-//            new XC_MethodHook() {
-//                @Override
-//                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-//                    Activity activity = (Activity) param.thisObject;
-//                    String id = activity.getIntent().getStringExtra("CONTENT_KEY");
-//                    String url = activity.getIntent().getStringExtra("CONTENT_URL");
-//                    Context context = activity.getApplicationContext();
-//                    Notifier.onMedia(context, id, url, 1);
-//                }
-//            }
-//        );
+/*
+        // PHOTO
+        XposedHelpers.findAndHookMethod(
+            "jp.co.sonymusic.communication.keyakizaka.activity.ActivityShowPhoto",
+            loadPackageParam.classLoader,
+            "a",
+            new XC_MethodHook() {
+                @Override
+                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                    Activity activity = (Activity) param.thisObject;
+                    String id = activity.getIntent().getStringExtra("CONTENT_KEY");
+                    String url = activity.getIntent().getStringExtra("CONTENT_URL");
+                    Context context = activity.getApplicationContext();
+                    Notifier.onMedia(context, id, url, 1);
+                }
+            }
+        );
+*/
 
         // PHOTO
         XposedHelpers.findAndHookMethod(
@@ -85,22 +87,24 @@ public class Sniffer implements IXposedHookLoadPackage {
             }
         );
 
+/*
         // MOVIE
-//        XposedHelpers.findAndHookMethod(
-//            "jp.co.sonymusic.communication.keyakizaka.activity.ActivityPlayMovie",
-//            loadPackageParam.classLoader,
-//            "a",
-//            new XC_MethodHook() {
-//                @Override
-//                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-//                    Activity activity = (Activity) param.thisObject;
-//                    String id = activity.getIntent().getStringExtra("CONTENT_ID");
-//                    String url = activity.getIntent().getStringExtra("CONTENT_URL");
-//                    Context context = activity.getApplicationContext();
-//                    Notifier.onMedia(context, id, url, 3);
-//                }
-//            }
-//        );
+        XposedHelpers.findAndHookMethod(
+            "jp.co.sonymusic.communication.keyakizaka.activity.ActivityPlayMovie",
+            loadPackageParam.classLoader,
+            "a",
+            new XC_MethodHook() {
+                @Override
+                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                    Activity activity = (Activity) param.thisObject;
+                    String id = activity.getIntent().getStringExtra("CONTENT_ID");
+                    String url = activity.getIntent().getStringExtra("CONTENT_URL");
+                    Context context = activity.getApplicationContext();
+                    Notifier.onMedia(context, id, url, 3);
+                }
+            }
+        );
+*/
 
         // MOVIE
         XposedHelpers.findAndHookMethod(
@@ -142,56 +146,62 @@ public class Sniffer implements IXposedHookLoadPackage {
             }
         );
 
-        //TEXT
-//        XposedHelpers.findAndHookMethod(
-//            TextView.class,
-//            "onTouchEvent",
-//            MotionEvent.class,
-//            new XC_MethodHook() {
-//                @Override
-//                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-//                    Log.d(Constant.DEBUG_TAG, "TextView onTouchEvent" );
-//                    super.afterHookedMethod(param);
-//                    View view = (View) param.thisObject;
-//                    MotionEvent event = (MotionEvent) param.args[0];
-//                    gestureListener.onTouchEvent(view, event);
-//                }
-//            }
-//        );
+/*
+        // TEXT
+        XposedHelpers.findAndHookMethod(
+            TextView.class,
+            "onTouchEvent",
+            MotionEvent.class,
+            new XC_MethodHook() {
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    Log.d(Constant.DEBUG_TAG, "TextView onTouchEvent" );
+                    super.afterHookedMethod(param);
+                    View view = (View) param.thisObject;
+                    MotionEvent event = (MotionEvent) param.args[0];
+                    gestureListener.onTouchEvent(view, event);
+                }
+            }
+        );
+*/
 
-        //TEXT
-//        XposedHelpers.findAndHookMethod(
-//            TextView.class,
-//            "onTouchEvent",
-//            MotionEvent.class,
-//            new XC_MethodHook() {
-//                @Override
-//                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-//                    super.afterHookedMethod(param);
-//                    View view = (View) param.thisObject;
-//                    MotionEvent event = (MotionEvent) param.args[0];
-//                    gestureListener.onTouchEvent(view, event);
-//                }
-//            }
-//        );
+/*
+        // TEXT
+        XposedHelpers.findAndHookMethod(
+            TextView.class,
+            "onTouchEvent",
+            MotionEvent.class,
+            new XC_MethodHook() {
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    super.afterHookedMethod(param);
+                    View view = (View) param.thisObject;
+                    MotionEvent event = (MotionEvent) param.args[0];
+                    gestureListener.onTouchEvent(view, event);
+                }
+            }
+        );
+*/
 
-        //TEXT
-//        XposedHelpers.findAndHookMethod(
-//            "jp.co.sonymusic.communication.keyakizaka.view.talk.TalkItemTextContent",
-//            loadPackageParam.classLoader,
-//            "a",
-//            loadPackageParam.classLoader.loadClass("jp.co.sonymusic.communication.keyakizaka.db.dto.TalkInfo"),
-//            new XC_MethodHook() {
-//                @Override
-//                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-//                    Log.d(Constant.DEBUG_TAG, "TextView create" );
-//                    super.afterHookedMethod(param);
-//                    TextView textView = (TextView) XposedHelpers.getObjectField(param.thisObject, "c");
-//                }
-//            }
-//        );
+/*
+        // TEXT
+        XposedHelpers.findAndHookMethod(
+            "jp.co.sonymusic.communication.keyakizaka.view.talk.TalkItemTextContent",
+            loadPackageParam.classLoader,
+            "a",
+            loadPackageParam.classLoader.loadClass("jp.co.sonymusic.communication.keyakizaka.db.dto.TalkInfo"),
+            new XC_MethodHook() {
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    Log.d(Constant.DEBUG_TAG, "TextView create" );
+                    super.afterHookedMethod(param);
+                    TextView textView = (TextView) XposedHelpers.getObjectField(param.thisObject, "c");
+                }
+            }
+        );
+*/
 
-        //TEXT
+        // TEXT
         XposedHelpers.findAndHookMethod(
             TextView.class,
             "setText",
@@ -225,7 +235,7 @@ public class Sniffer implements IXposedHookLoadPackage {
             }
         );
 
-        //SCREENSHOT
+        // SCREENSHOT
         XposedHelpers.findAndHookMethod(
             Window.class,
             "addFlags",
@@ -241,107 +251,111 @@ public class Sniffer implements IXposedHookLoadPackage {
             }
         );
 
-//        PHOTO
-//        XposedHelpers.findAndHookMethod(
-//            "jp.co.sonymusic.communication.keyakizaka.e.c",
-//            loadPackageParam.classLoader,
-//            "d",
-//            String.class,
-//            new XC_MethodHook() {
-//                @Override
-//                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-//                    String url = (String) param.args[0];
-//                    Context context = AndroidAppHelper.currentApplication().getApplicationContext();
-//                    Notifier.onMedia(context, url, 1);
-//                }
-//                @Override
-//                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-//                }
-//            }
-//        );
-//
-//        VOICE
-//        XposedHelpers.findAndHookMethod(
-//            "android.media.MediaPlayer",
-//            loadPackageParam.classLoader,
-//            "setDataSource",
-//            String.class,
-//            new XC_MethodHook() {
-//                @Override
-//                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-//                    String url = (String) param.args[0];
-//                    Context context = AndroidAppHelper.currentApplication().getApplicationContext();
-//                    Notifier.onMedia(context, url, 2);
-//                }
-//                @Override
-//                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-//                }
-//            }
-//        );
-//
-//        VIDEO
-//        XposedHelpers.findAndHookMethod(
-//            "android.widget.VideoView",
-//            loadPackageParam.classLoader,
-//            "setVideoPath",
-//            String.class,
-//            new XC_MethodHook() {
-//                @Override
-//                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-//                    String url = (String) param.args[0];
-//                    Context context = AndroidAppHelper.currentApplication().getApplicationContext();
-//                    Notifier.onMedia(context, url, 3);
-//                }
-//                @Override
-//                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-//                }
-//            }
-//        );
+/*
+        // PHOTO
+        XposedHelpers.findAndHookMethod(
+            "jp.co.sonymusic.communication.keyakizaka.e.c",
+            loadPackageParam.classLoader,
+            "d",
+            String.class,
+            new XC_MethodHook() {
+                @Override
+                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                    String url = (String) param.args[0];
+                    Context context = AndroidAppHelper.currentApplication().getApplicationContext();
+                    Notifier.onMedia(context, url, 1);
+                }
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                }
+            }
+        );
+
+        // VOICE
+        XposedHelpers.findAndHookMethod(
+            "android.media.MediaPlayer",
+            loadPackageParam.classLoader,
+            "setDataSource",
+            String.class,
+            new XC_MethodHook() {
+                @Override
+                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                    String url = (String) param.args[0];
+                    Context context = AndroidAppHelper.currentApplication().getApplicationContext();
+                    Notifier.onMedia(context, url, 2);
+                }
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                }
+            }
+        );
+
+        // VIDEO
+        XposedHelpers.findAndHookMethod(
+            "android.widget.VideoView",
+            loadPackageParam.classLoader,
+            "setVideoPath",
+            String.class,
+            new XC_MethodHook() {
+                @Override
+                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                    String url = (String) param.args[0];
+                    Context context = AndroidAppHelper.currentApplication().getApplicationContext();
+                    Notifier.onMedia(context, url, 3);
+                }
+                @Override
+                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                }
+            }
+        );
+*/
     }
 
-//    private class GestureListener {
-//
-//        private GestureDetector detector;
-//        private View target;
-//
-//        public void bind(Context context) {
-//            detector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
-//                public boolean onDown(MotionEvent e) {
-//                    return true;
-//                }
-//                public boolean onSingleTapUp(MotionEvent e) {
-//                    return false;
-//                }
-//                public boolean onSingleTapConfirmed(MotionEvent e) {
-//                    return true;
-//                }
-//                public boolean onDoubleTap(MotionEvent e) {
-//                    trigger();
-//                    return true;
-//                }
-//                public boolean onDoubleTapEvent(MotionEvent e) {
-//                    return true;
-//                }
-//            });
-//        }
-//
-//        private void trigger() {
-//            if (!(target instanceof TextView)) return;
-//            TextView textView = (TextView) target;
-//            int resourceId = textView.getId();
-//            if (resourceId == View.NO_ID) return;
-//            String viewName = target.getContext().getResources().getResourceEntryName(resourceId);
-//            if (viewName.equals("text") || viewName.equals("singleLineText")) {
-//                String text = textView.getText().toString();
-//                Receiver.onText(target.getContext(), text);
-//            }
-//        }
-//
-//        public void onTouchEvent(View view, MotionEvent event) {
-//            if (event.getAction() == MotionEvent.ACTION_DOWN) target = view;
-//            detector.onTouchEvent(event);
-//        }
-//
-//    }
+/*
+    private class GestureListener {
+
+        private GestureDetector detector;
+        private View target;
+
+        public void bind(Context context) {
+            detector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
+                public boolean onDown(MotionEvent e) {
+                    return true;
+                }
+                public boolean onSingleTapUp(MotionEvent e) {
+                    return false;
+                }
+                public boolean onSingleTapConfirmed(MotionEvent e) {
+                    return true;
+                }
+                public boolean onDoubleTap(MotionEvent e) {
+                    trigger();
+                    return true;
+                }
+                public boolean onDoubleTapEvent(MotionEvent e) {
+                    return true;
+                }
+            });
+        }
+
+        private void trigger() {
+            if (!(target instanceof TextView)) return;
+            TextView textView = (TextView) target;
+            int resourceId = textView.getId();
+            if (resourceId == View.NO_ID) return;
+            String viewName = target.getContext().getResources().getResourceEntryName(resourceId);
+            if (viewName.equals("text") || viewName.equals("singleLineText")) {
+                String text = textView.getText().toString();
+                Receiver.onText(target.getContext(), text);
+            }
+        }
+
+        public void onTouchEvent(View view, MotionEvent event) {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) target = view;
+            detector.onTouchEvent(event);
+        }
+
+    }
+*/
 
 }
